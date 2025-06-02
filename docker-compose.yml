@@ -1,0 +1,21 @@
+version: '2'
+services:
+  shortener-db:
+    image: postgres:14-alpine
+    container_name: musthave-diploma-tpl-db-ct
+    volumes:
+      - postgres_home:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=musthave-diploma-tpl
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d musthave-diploma-tpl" ]
+      interval: 10s
+      timeout: 2s
+      retries: 2
+
+volumes:
+  postgres_home:
