@@ -9,6 +9,21 @@ import (
 	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
 )
 
+// BalanceWithdraw списывает баллы с баланса
+// @Summary Withdraw balance
+// @Description Запрос на списание баллов с накопительного счёта в счёт оплаты нового заказа
+// @Tags withdrawals
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param withdraw body models.UserWithdrawals true "Данные для списания"
+// @Success 200 {string} string "Успешная обработка запроса"
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 401 {string} string "Пользователь не аутентифицирован"
+// @Failure 402 {string} string "На счету недостаточно средств"
+// @Failure 422 {string} string "Неверный номер заказа"
+// @Failure 500 {string} string "Внутренняя ошибка сервера"
+// @Router /api/user/balance/withdraw [post]
 func (app *App) BalanceWithdraw(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 
@@ -38,6 +53,18 @@ func (app *App) BalanceWithdraw(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// GetWithdrawals возвращает историю выводов средств
+// @Summary Get withdrawals history
+// @Description Получение информации о выводе средств с накопительного счёта пользователем. Сортировка по времени вывода от новых к старым.
+// @Tags withdrawals
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {array} models.UserWithdrawals "История выводов средств"
+// @Success 204 {string} string "Нет ни одного списания"
+// @Failure 401 {string} string "Пользователь не аутентифицирован"
+// @Failure 500 {string} string "Внутренняя ошибка сервера"
+// @Router /api/user/withdrawals [get]
 func (app *App) GetWithdrawals(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 

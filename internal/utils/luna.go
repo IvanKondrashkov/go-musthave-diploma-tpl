@@ -1,5 +1,10 @@
 package utils
 
+const (
+	digitThreshold = 9
+)
+
+// IsValidLuna валидация номера заказа по алгоритму Луна
 func IsValidLuna(number string) bool {
 	sum := 0
 	alternate := false
@@ -12,7 +17,7 @@ func IsValidLuna(number string) bool {
 
 		if alternate {
 			digit *= 2
-			if digit > 9 {
+			if digit > digitThreshold {
 				digit = (digit % 10) + 1
 			}
 		}

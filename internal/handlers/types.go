@@ -1,8 +1,13 @@
 package handlers
 
 import (
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
+	"context"
 	"net/http"
+
+	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
+	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/config"
 	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
@@ -13,25 +18,37 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+// UserService определяет интерфейс для работы с пользователями
 type UserService interface {
-	Register(res http.ResponseWriter, req *http.Request)
-	Login(res http.ResponseWriter, req *http.Request)
+	// Register регистрирует пользователя в системе
+	Register(ctx context.Context, tx pgx.Tx, login, password string) (*uuid.UUID, error)
+	// Authenticate аутентификация и авторизация пользователя в системе
+	Authenticate(ctx context.Context, login, password string) (*uuid.UUID, error)
 }
 
+// OrderService интерфейс для работы с заказами
 type OrderService interface {
-	SaveOrder(res http.ResponseWriter, req *http.Request)
-	GetOrders(res http.ResponseWriter, req *http.Request)
+	// SaveOrder сохранение нового заказа
+	SaveOrder(ctx context.Context, tx pgx.Tx, userID uuid.UUID, orderNumber string) error
+	// GetOrders получение списка заказов пользователя
+	GetOrders(ctx context.Context, userID uuid.UUID) ([]*models.Order, error)
 }
 
+// BalanceService интерфейс для работы с балансами
 type BalanceService interface {
-	GetBalance(res http.ResponseWriter, req *http.Request)
+	// GetBalance получение текущего баланса пользователя
+	GetBalance(ctx context.Context, userID uuid.UUID) (*models.UserBalance, error)
 }
 
+// WithdrawService интерфейс для работы со списаниями
 type WithdrawService interface {
-	BalanceWithdraw(res http.ResponseWriter, req *http.Request)
-	GetWithdrawals(res http.ResponseWriter, req *http.Request)
+	// BalanceWithdraw списание баллов с накопительного счёта в счёт оплаты нового заказа
+	BalanceWithdraw(ctx context.Context, tx pgx.Tx, userID uuid.UUID, withdraw models.UserWithdrawals) error
+	// GetWithdrawals данные о выводе средств
+	GetWithdrawals(ctx context.Context, userID uuid.UUID) ([]*models.UserWithdrawals, error)
 }
 
+// App представляет основное приложение с сервисами и воркером
 type App struct {
 	URL             string
 	worker          *worker.Worker
@@ -41,11 +58,13 @@ type App struct {
 	withdrawService *service.WithdrawService
 }
 
+// Handler обрабатывает HTTP-запросы
 type Handler struct {
 	Logger *logger.ZapLogger
 	app    *App
 }
 
+// NewApp создает новый экземпляр App
 func NewApp(newWorker *worker.Worker, userService *service.UserService, orderService *service.OrderService,
 	balanceService *service.BalanceService, withdrawService *service.WithdrawService) *App {
 	return &App{
@@ -58,6 +77,7 @@ func NewApp(newWorker *worker.Worker, userService *service.UserService, orderSer
 	}
 }
 
+// NewHandler создает новый обработчик HTTP-запросов
 func NewHandler(zl *logger.ZapLogger, app *App) *Handler {
 	return &Handler{
 		Logger: zl,
@@ -65,6 +85,7 @@ func NewHandler(zl *logger.ZapLogger, app *App) *Handler {
 	}
 }
 
+// NewRouter создает маршрутизатор с middleware и обработчиками
 func NewRouter(h *Handler) *chi.Mux {
 	r := chi.NewRouter()
 
@@ -83,6 +104,7 @@ func NewRouter(h *Handler) *chi.Mux {
 	return r
 }
 
+// NewServer создает HTTP-сервер с настройками
 func NewServer(r *chi.Mux) *http.Server {
 	return &http.Server{
 		Addr:         config.RunAddress,

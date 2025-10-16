@@ -3,13 +3,25 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
 	"net/http"
 
 	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
+	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
 	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
 )
 
+// Register регистрирует нового пользователя
+// @Summary User registration
+// @Description Регистрация нового пользователя в маркете «Гофермарт»
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.UserCredentials true "Данные для регистрации"
+// @Success 200 {string} string "Пользователь успешно зарегистрирован и аутентифицирован"
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 409 {string} string "Логин уже занят"
+// @Failure 500 {string} string "Внутренняя ошибка сервера"
+// @Router /api/user/register [post]
 func (app *App) Register(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 
@@ -43,6 +55,18 @@ func (app *App) Register(res http.ResponseWriter, req *http.Request) {
 	res.WriteHeader(http.StatusOK)
 }
 
+// Login аутентифицирует пользователя
+// @Summary User login
+// @Description Аутентификация пользователя в маркете «Гофермарт»
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body models.UserCredentials true "Данные для аутентификации"
+// @Success 200 {string} string "Пользователь успешно аутентифицирован"
+// @Failure 400 {string} string "Неверный формат запроса"
+// @Failure 401 {string} string "Неверная пара логин/пароль"
+// @Failure 500 {string} string "Внутренняя ошибка сервера"
+// @Router /api/user/login [post]
 func (app *App) Login(res http.ResponseWriter, req *http.Request) {
 	res.Header().Set("Content-Type", "application/json")
 

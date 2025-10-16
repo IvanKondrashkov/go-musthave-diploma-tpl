@@ -13,6 +13,14 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// SaveBalance сохранение баллов накопительного счёта, сохранение в БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - tx: транзакцию
+// - userID: идентификатор пользователя
+// - event: models.AccrualResponse
+// Возвращает:
+// - ошибку, если возникли проблемы при сохранении
 func (pg *Repository) SaveBalance(ctx context.Context, tx pgx.Tx, userID uuid.UUID, event models.AccrualResponse) error {
 	query := `
 	INSERT INTO balances(user_id, current) VALUES ($1, $2)
@@ -27,6 +35,12 @@ func (pg *Repository) SaveBalance(ctx context.Context, tx pgx.Tx, userID uuid.UU
 	return err
 }
 
+// GetBalance получение текущего баланса пользователя, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - userID: идентификатор пользователя
+// Возвращает:
+// - *models.UserBalance или ошибку, если не найден баланс пользователя (ErrUserBalanceNotFound) или возникли проблемы при получении данных
 func (pg *Repository) GetBalance(ctx context.Context, userID uuid.UUID) (*models.UserBalance, error) {
 	query := `
 	SELECT current, withdrawn FROM balances WHERE user_id = $1

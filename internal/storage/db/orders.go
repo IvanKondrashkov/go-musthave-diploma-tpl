@@ -14,6 +14,12 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// GetUserByOrderNumber получение пользователя по номеру заказа, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - orderNumber: номер заказа
+// Возвращает:
+// - userID или ошибку, если не найден пользователь (ErrUserNotFound) или возникли проблемы при получении данных
 func (pg *Repository) GetUserByOrderNumber(ctx context.Context, orderNumber string) (*uuid.UUID, error) {
 	query := `
 	SELECT user_id FROM orders WHERE number = $1
@@ -30,6 +36,12 @@ func (pg *Repository) GetUserByOrderNumber(ctx context.Context, orderNumber stri
 	return userID, err
 }
 
+// GetOrders получение списка заказов пользователя, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - userID: идентификатор пользователя
+// Возвращает:
+// - []*models.Order или ошибку, если возникли проблемы при получении данных
 func (pg *Repository) GetOrders(ctx context.Context, userID uuid.UUID) ([]*models.Order, error) {
 	query := `
 	SELECT number, status, accrual, uploaded_at FROM orders WHERE user_id = $1 ORDER BY uploaded_at DESC
@@ -52,6 +64,14 @@ func (pg *Repository) GetOrders(ctx context.Context, userID uuid.UUID) ([]*model
 	return orders, err
 }
 
+// SaveOrder сохранение нового заказа, сохранение в БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - tx: транзакцию
+// - userID: идентификатор пользователя
+// - orderNumber: номер заказа
+// Возвращает:
+// - ошибку, если возникли проблемы при сохранении
 func (pg *Repository) SaveOrder(ctx context.Context, tx pgx.Tx, userID uuid.UUID, orderNumber string) error {
 	query := `
 	INSERT INTO orders(id, user_id, number, status, uploaded_at)
@@ -65,6 +85,13 @@ func (pg *Repository) SaveOrder(ctx context.Context, tx pgx.Tx, userID uuid.UUID
 	return err
 }
 
+// UpdateOrderAccrual обновление заказа, обновление в БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - tx: транзакцию
+// - event: models.AccrualResponse
+// Возвращает:
+// - ошибку, если возникли проблемы при обновлении
 func (pg *Repository) UpdateOrderAccrual(ctx context.Context, tx pgx.Tx, event models.AccrualResponse) error {
 	query := `
 	UPDATE orders SET status = $1, accrual = $2, processed_at = $3 WHERE number = $4

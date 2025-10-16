@@ -59,3 +59,9 @@ tasks:
       cmds:
         - golangci-lint run --config .golangci.yml
       silent: true
+
+  build-server:
+    desc: Build server binary
+    cmds:
+      - |
+        CGO_ENABLED=0 GOOS=linux go build -o bin/gophermart ./cmd/gophermart

@@ -13,6 +13,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Register регистрация пользователя, сохранение в БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - tx: транзакцию
+// - login: логин пользователя
+// - password: пароль пользователя в зашифрованном виде
+// Возвращает:
+// - userID или ошибку, если пользователь уже существует (ErrLoginAlreadyExists) или возникли проблемы при сохранении
 func (pg *Repository) Register(ctx context.Context, tx pgx.Tx, login, password string) (*uuid.UUID, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -32,6 +40,13 @@ func (pg *Repository) Register(ctx context.Context, tx pgx.Tx, login, password s
 	return userID, err
 }
 
+// Authenticate аутентификация и авторизация пользователя, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - login: логин пользователя
+// - password: пароль пользователя
+// Возвращает:
+// - userID или ошибку, если данные не валидны (ErrInvalidCredentials) или возникли проблемы при авторизации
 func (pg *Repository) Authenticate(ctx context.Context, login, password string) (*uuid.UUID, error) {
 	query := `
 	SELECT id, password_hash FROM users WHERE login = $1

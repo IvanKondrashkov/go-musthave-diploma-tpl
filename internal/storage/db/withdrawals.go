@@ -13,6 +13,14 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+// BalanceWithdraw списание баллов с накопительного счёта в счёт оплаты нового заказа, сохранение в БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - tx: транзакцию
+// - userID: идентификатор пользователя
+// - withdraw: models.UserWithdrawals
+// Возвращает:
+// - ошибку, если не достаточно денег для списания (ErrInvalidUserWithdraw) или возникли проблемы при сохранении
 func (pg *Repository) BalanceWithdraw(ctx context.Context, tx pgx.Tx, userID uuid.UUID, withdraw models.UserWithdrawals) error {
 	query := `
 	SELECT current FROM balances WHERE user_id = $1 FOR UPDATE
@@ -51,6 +59,12 @@ func (pg *Repository) BalanceWithdraw(ctx context.Context, tx pgx.Tx, userID uui
 	return err
 }
 
+// GetWithdrawals история выводов средств, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - userID: идентификатор пользователя
+// Возвращает:
+// - []*models.UserWithdrawals или ошибку, если возникли проблемы при получении данных
 func (pg *Repository) GetWithdrawals(ctx context.Context, userID uuid.UUID) ([]*models.UserWithdrawals, error) {
 	query := `
 	SELECT order_number, sum, processed_at FROM withdrawals WHERE user_id = $1 ORDER BY processed_at DESC

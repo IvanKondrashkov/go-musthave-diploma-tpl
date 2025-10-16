@@ -7,4 +7,5 @@ const (
 	PROCESSED  Status = "PROCESSED"
 )
 
+// Status статус заказа
 type Status string

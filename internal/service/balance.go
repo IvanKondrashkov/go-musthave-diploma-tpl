@@ -3,12 +3,20 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
 
 	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
 	customContext "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
+
+	"github.com/google/uuid"
 )
 
+// SaveBalance сохранение баллов накопительного счёта
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - userID: идентификатор пользователя
+// - event: models.AccrualResponse
+// Возвращает:
+// - ошибку, если возникли проблемы при сохранении
 func (s *BalanceService) SaveBalance(ctx context.Context, userID uuid.UUID, event models.AccrualResponse) error {
 	tx, err := s.Runner.BeginTx(ctx)
 	if err != nil {
@@ -17,12 +25,17 @@ func (s *BalanceService) SaveBalance(ctx context.Context, userID uuid.UUID, even
 
 	err = s.BalanceRepository.SaveBalance(ctx, tx, userID, event)
 	if err != nil {
-		_ = tx.Rollback(ctx)
+		_ = s.Runner.Rollback(ctx, tx)
 		return fmt.Errorf("save balance error: %w", err)
 	}
-	return tx.Commit(ctx)
+	return s.Runner.Commit(ctx, tx)
 }
 
+// GetBalance получение текущего баланса пользователя, получение данных из БД PostgreSQL
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// Возвращает:
+// - *models.UserBalance или ошибку, если возникли проблемы при получении данных
 func (s *BalanceService) GetBalance(ctx context.Context) (*models.UserBalance, error) {
 	userID := customContext.GetContextUserID(ctx)
 	balance, err := s.BalanceRepository.GetBalance(ctx, *userID)

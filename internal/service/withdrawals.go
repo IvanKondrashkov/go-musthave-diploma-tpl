@@ -10,6 +10,12 @@ import (
 	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/utils"
 )
 
+// BalanceWithdraw списание баллов с накопительного счёта в счёт оплаты нового заказа
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// - withdraw: models.UserWithdrawals
+// Возвращает:
+// - ошибку, если номер заказа не валиден (ErrInvalidOrderNumber) или возникли проблемы при сохранении
 func (s *WithdrawService) BalanceWithdraw(ctx context.Context, withdraw models.UserWithdrawals) error {
 	tx, err := s.Runner.BeginTx(ctx)
 	if err != nil {
@@ -17,18 +23,24 @@ func (s *WithdrawService) BalanceWithdraw(ctx context.Context, withdraw models.U
 	}
 
 	if !utils.IsValidLuna(withdraw.Order) {
+		_ = s.Runner.Rollback(ctx, tx)
 		return fmt.Errorf("invalid order number luna error: %w", customError.ErrInvalidOrderNumber)
 	}
 
 	userID := customContext.GetContextUserID(ctx)
 	err = s.WithdrawRepository.BalanceWithdraw(ctx, tx, *userID, withdraw)
 	if err != nil {
-		_ = tx.Rollback(ctx)
+		_ = s.Runner.Rollback(ctx, tx)
 		return fmt.Errorf("withdraw balance error: %w", err)
 	}
-	return tx.Commit(ctx)
+	return s.Runner.Commit(ctx, tx)
 }
 
+// GetWithdrawals история выводов средств
+// Принимает:
+// - ctx: контекст с информацией о пользователе
+// Возвращает:
+// - []*models.UserWithdrawals или ошибку, если массив пустой (ErrWithdrawalsIsEmpty) или возникли проблемы при получении данных
 func (s *WithdrawService) GetWithdrawals(ctx context.Context) ([]*models.UserWithdrawals, error) {
 	userID := customContext.GetContextUserID(ctx)
 	withdraws, err := s.WithdrawRepository.GetWithdrawals(ctx, *userID)

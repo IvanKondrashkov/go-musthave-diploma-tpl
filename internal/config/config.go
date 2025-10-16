@@ -8,17 +8,20 @@ import (
 	"github.com/caarlos0/env/v6"
 )
 
+// Config содержит конфигурационные параметры приложения,
+// которые могут быть установлены через переменные окружения.
 type Config struct {
-	RunAddress           string `env:"RUN_ADDRESS"`
-	DatabaseURI          string `env:"DATABASE_URI"`
-	AccrualSystemAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"`
-	LogLevel             string `env:"LOG_LEVEL"`
-	AuthKey              string `env:"AUTH_KEY"`
+	RunAddress           string `env:"RUN_ADDRESS"`            // Адрес сервера в формате host:port
+	AccrualSystemAddress string `env:"ACCRUAL_SYSTEM_ADDRESS"` // Адрес сервера системы лояльности в формате host:port
+	DatabaseURI          string `env:"DATABASE_URI"`           // URI для подключения к БД
+	LogLevel             string `env:"LOG_LEVEL"`              // Уровень логирования (DEBUG, INFO, WARN, ERROR)
+	AuthKey              string `env:"AUTH_KEY"`               // Ключ для аутентификации
 
-	TerminationTimeout int `env:"TERMINATION_TIMEOUT"`
-	WorkerCount        int `env:"WORKER_COUNT"`
+	TerminationTimeout int `env:"TERMINATION_TIMEOUT"` // Таймаут завершения работы (в секундах)
+	WorkerCount        int `env:"WORKER_COUNT"`        // Количество воркеров
 }
 
+// Глобальные переменные конфигурации со значениями по умолчанию
 var (
 	RunAddress           = "localhost:8080"
 	DatabaseURI          = ""
@@ -30,6 +33,12 @@ var (
 	WorkerCount        = 10
 )
 
+// ParseConfig загружает конфигурацию приложения из:
+// 1. Аргументов командной строки (имеют наивысший приоритет)
+// 2. Переменных окружения
+// 3. Значений по умолчанию
+//
+// Возвращает ошибку если не удалось распарсить конфигурацию.
 func ParseConfig() error {
 	flag.StringVar(&RunAddress, "a", RunAddress, "Base host host:port")
 	flag.StringVar(&DatabaseURI, "d", DatabaseURI, "Base url db connection")
