@@ -1,25 +1,30 @@
 # go-musthave-diploma-tpl
+![Go](https://img.shields.io/badge/-Go-00ADD8?logo=go)
+![REST](https://img.shields.io/badge/-REST-FF6C37?logo=rest&logoColor=white)
+![Swagger](https://img.shields.io/badge/-Swagger-85EA2D?logo=swagger&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?logo=postgresql)
 
-Шаблон репозитория для индивидуального дипломного проекта курса «Go-разработчик»
-
-# Начало работы
-
-1. Склонируйте репозиторий в любую подходящую директорию на вашем компьютере.
-2. В корне репозитория выполните команду `go mod init <name>` (где `<name>` — адрес вашего репозитория на GitHub без
-   префикса `https://`) для создания модуля
-
-# Обновление шаблона
-
-Чтобы иметь возможность получать обновления автотестов и других частей шаблона, выполните команду:
-
-```
-git remote add -m master template https://github.com/yandex-praktikum/go-musthave-diploma-tpl.git
+## Как запустить контейнер
+Сборка бинарных файлов сервера:
+```shell
+task build-server
 ```
 
-Для обновления кода автотестов выполните команду:
-
+Запустите локально Docker:
+```shell
+docker-compose up -d
 ```
-git fetch template && git checkout template/master .github
-```
 
-Затем добавьте полученные изменения в свой репозиторий.
+## Конфигурация
+### Конфигурация Сервера
+Сервер поддерживает настройку через переменные окружения, аргументы командной строки:
+
+| Переменная | Флаг | По умолчанию | Описание                                             |
+|------------|------|--------------|------------------------------------------------------|
+| `RUN_ADDRESS` | `-a` | `localhost:8080` | Адрес HTTP сервера                                   |
+| `ACCRUAL_SYSTEM_ADDRESS` | `-r` | `localhost:8081` | Адрес HTTP сервера системы расчета баллов лояльности |
+| `LOG_LEVEL` | `-l` | `INFO` | Уровень логирования (DEBUG, INFO, WARN, ERROR)       |
+| `DATABASE_URI` | `-d` | - | URI для подключения к PostgreSQL                     |
+| `AUTH_KEY` | -    | hex-ключ | Ключ для аутентификации JWT                          |
+| `TERMINATION_TIMEOUT` | -    | `30s` | Таймаут graceful shutdown                            |
+| `WORKER_COUNT` | -    | `10` | Количество воркеров                                  |

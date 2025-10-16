@@ -1,0 +1,46 @@
+services:
+  gophermart-db:
+    image: postgres:14-alpine
+    container_name: gophermart-db-ct
+    volumes:
+      - postgres_home:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=gophermart
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U root -d gophermart" ]
+      interval: 10s
+      timeout: 2s
+      retries: 2
+
+  accrual:
+    build:
+      context: .
+      dockerfile: cmd/accrual/Dockerfile
+    container_name: accrual-server-ct
+    ports:
+      - "8081:8081"
+    environment:
+      - RUN_ADDRESS=:8081
+
+  server:
+    build:
+      context: .
+      dockerfile: cmd/gophermart/Dockerfile
+    container_name: gophermart-server-ct
+    ports:
+      - "8080:8080"
+    environment:
+      - RUN_ADDRESS=:8080
+      - ACCRUAL_SYSTEM_ADDRESS=accrual:8081
+      - DATABASE_URI=postgres://root:root@gophermart-db:5432/gophermart?sslmode=disable
+      - ENABLE_HTTPS=false
+    depends_on:
+      gophermart-db:
+        condition: service_healthy
+
+volumes:
+  postgres_home:

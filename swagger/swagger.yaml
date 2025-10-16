@@ -1,0 +1,320 @@
+basePath: /
+definitions:
+  models.Order:
+    description: Запрос на создание заказа
+    properties:
+      accrual:
+        example: 100
+        type: number
+      number:
+        example: "2377225624"
+        type: string
+      status:
+        example: NEW
+        type: string
+      uploaded_at:
+        example: "2025-10-09T16:09:57+03:00"
+        type: string
+    type: object
+  models.UserBalance:
+    description: Запрос на получения баланса
+    properties:
+      current:
+        example: 1000
+        type: number
+      withdrawn:
+        example: 99
+        type: number
+    type: object
+  models.UserCredentials:
+    description: Запрос на регистрацию и аутентификацию
+    properties:
+      login:
+        example: Djon
+        type: string
+      password:
+        example: "123456"
+        type: string
+    type: object
+  models.UserWithdrawals:
+    description: Запрос на историю выводов средств
+    properties:
+      order:
+        example: "2377225624"
+        type: string
+      processed_at:
+        example: "2025-10-09T16:09:57+03:00"
+        type: string
+      sum:
+        example: 10
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: маркет «Гофермарт»
+  title: Gophermart API
+  version: "1.0"
+paths:
+  /api/user/balance:
+    get:
+      consumes:
+      - application/json
+      description: Получение текущего баланса счёта баллов лояльности пользователя
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Баланс пользователя
+          schema:
+            $ref: '#/definitions/models.UserBalance'
+        "401":
+          description: Пользователь не аутентифицирован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get user balance
+      tags:
+      - balance
+  /api/user/balance/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: Запрос на списание баллов с накопительного счёта в счёт оплаты
+        нового заказа
+      parameters:
+      - description: Данные для списания
+        in: body
+        name: withdraw
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserWithdrawals'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная обработка запроса
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "401":
+          description: Пользователь не аутентифицирован
+          schema:
+            type: string
+        "402":
+          description: На счету недостаточно средств
+          schema:
+            type: string
+        "422":
+          description: Неверный номер заказа
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Withdraw balance
+      tags:
+      - withdrawals
+  /api/user/login:
+    post:
+      consumes:
+      - application/json
+      description: Аутентификация пользователя в маркете «Гофермарт»
+      parameters:
+      - description: Данные для аутентификации
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь успешно аутентифицирован
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "401":
+          description: Неверная пара логин/пароль
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: User login
+      tags:
+      - auth
+  /api/user/orders:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка загруженных пользователем номеров заказов, статусов
+        их обработки и информации о начислениях.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список заказов
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+        "204":
+          description: Нет данных для ответа
+          schema:
+            type: string
+        "401":
+          description: Пользователь не аутентифицирован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get user orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - text/plain
+      description: Загрузка номера заказа для расчета баллов лояльности. Номер заказа
+        проверяется алгоритмом Луна.
+      parameters:
+      - description: Номер заказа
+        example: '"12345678903"'
+        in: body
+        name: order
+        required: true
+        schema:
+          type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Заказ уже был загружен этим пользователем
+          schema:
+            type: string
+        "202":
+          description: Новый номер заказа принят в обработку
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "401":
+          description: Пользователь не аутентифицирован
+          schema:
+            type: string
+        "409":
+          description: Номер заказа уже был загружен другим пользователем
+          schema:
+            type: string
+        "422":
+          description: Неверный формат номера заказа
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Upload order number
+      tags:
+      - orders
+  /api/user/register:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация нового пользователя в маркете «Гофермарт»
+      parameters:
+      - description: Данные для регистрации
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserCredentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пользователь успешно зарегистрирован и аутентифицирован
+          schema:
+            type: string
+        "400":
+          description: Неверный формат запроса
+          schema:
+            type: string
+        "409":
+          description: Логин уже занят
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      summary: User registration
+      tags:
+      - auth
+  /api/user/withdrawals:
+    get:
+      consumes:
+      - application/json
+      description: Получение информации о выводе средств с накопительного счёта пользователем.
+        Сортировка по времени вывода от новых к старым.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: История выводов средств
+          schema:
+            items:
+              $ref: '#/definitions/models.UserWithdrawals'
+            type: array
+        "204":
+          description: Нет ни одного списания
+          schema:
+            type: string
+        "401":
+          description: Пользователь не аутентифицирован
+          schema:
+            type: string
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get withdrawals history
+      tags:
+      - withdrawals
+securityDefinitions:
+  ApiKeyAuth:
+    in: cookie
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- name: auth "Аутентификация и регистрация"
+- name: orders "Заказы"
+- name: balance "Баланс"
+- name: withdrawals "Списания"
