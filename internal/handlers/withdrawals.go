@@ -5,8 +5,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 )
 
 // BalanceWithdraw списывает баллы с баланса

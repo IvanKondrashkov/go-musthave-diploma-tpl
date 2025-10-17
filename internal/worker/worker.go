@@ -3,8 +3,8 @@ package worker
 import (
 	"context"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
+	"github.com/IvanKondrashkov/go-market/internal/logger"
+	"github.com/IvanKondrashkov/go-market/internal/models"
 
 	"go.uber.org/zap"
 )

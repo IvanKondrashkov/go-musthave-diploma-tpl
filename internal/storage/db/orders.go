@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"

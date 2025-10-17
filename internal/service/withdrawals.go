@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	customContext "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/utils"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	customContext "github.com/IvanKondrashkov/go-market/internal/service/middleware/auth"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/utils"
 )
 
 // BalanceWithdraw списание баллов с накопительного счёта в счёт оплаты нового заказа

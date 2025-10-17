@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	customContext "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	customContext "github.com/IvanKondrashkov/go-market/internal/service/middleware/auth"
 
 	"github.com/google/uuid"
 )

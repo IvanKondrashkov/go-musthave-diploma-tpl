@@ -9,12 +9,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/config"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/handlers"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage/db"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/worker"
+	"github.com/IvanKondrashkov/go-market/internal/config"
+	"github.com/IvanKondrashkov/go-market/internal/handlers"
+	"github.com/IvanKondrashkov/go-market/internal/logger"
+	"github.com/IvanKondrashkov/go-market/internal/service"
+	"github.com/IvanKondrashkov/go-market/internal/storage/db"
+	"github.com/IvanKondrashkov/go-market/internal/worker"
 
 	"go.uber.org/zap"
 )

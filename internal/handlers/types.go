@@ -4,15 +4,15 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	"github.com/IvanKondrashkov/go-market/internal/service/middleware/auth"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/config"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/worker"
+	"github.com/IvanKondrashkov/go-market/internal/config"
+	"github.com/IvanKondrashkov/go-market/internal/logger"
+	"github.com/IvanKondrashkov/go-market/internal/service"
+	"github.com/IvanKondrashkov/go-market/internal/worker"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"

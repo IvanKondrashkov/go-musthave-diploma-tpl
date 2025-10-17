@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/config"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/config"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"

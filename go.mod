@@ -1,4 +1,4 @@
-module github.com/IvanKondrashkov/go-musthave-diploma-tpl
+module github.com/IvanKondrashkov/go-market
 
 go 1.23.0
 

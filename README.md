@@ -1,4 +1,4 @@
-# go-musthave-diploma-tpl
+# go-market
 ![Go](https://img.shields.io/badge/-Go-00ADD8?logo=go)
 ![REST](https://img.shields.io/badge/-REST-FF6C37?logo=rest&logoColor=white)
 ![Swagger](https://img.shields.io/badge/-Swagger-85EA2D?logo=swagger&logoColor=black)

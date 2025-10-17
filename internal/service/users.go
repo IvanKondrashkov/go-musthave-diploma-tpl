@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 
 	"github.com/google/uuid"
 )

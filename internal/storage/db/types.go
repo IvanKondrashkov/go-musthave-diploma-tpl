@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service"
+	"github.com/IvanKondrashkov/go-market/internal/logger"
+	"github.com/IvanKondrashkov/go-market/internal/service"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/jackc/pgx/v5/pgxpool"

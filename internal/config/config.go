@@ -29,7 +29,7 @@ var (
 	LogLevel             = "INFO"
 	AuthKey              = []byte("6368616e676520746869732070617373776f726420746f206120736563726574")
 
-	TerminationTimeout = time.Second * 30
+	TerminationTimeout = time.Second * 60
 	WorkerCount        = 10
 )
 

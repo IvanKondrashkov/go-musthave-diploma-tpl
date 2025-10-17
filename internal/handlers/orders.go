@@ -6,9 +6,9 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	customContext "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	customContext "github.com/IvanKondrashkov/go-market/internal/service/middleware/auth"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 )
 
 // SaveOrder загружает номер заказа для расчета

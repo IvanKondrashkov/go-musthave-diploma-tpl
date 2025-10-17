@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/service/middleware/auth"
-	customError "github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/storage"
+	"github.com/IvanKondrashkov/go-market/internal/models"
+	"github.com/IvanKondrashkov/go-market/internal/service/middleware/auth"
+	customError "github.com/IvanKondrashkov/go-market/internal/storage"
 )
 
 // Register регистрирует нового пользователя

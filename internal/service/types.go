@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/logger"
-	"github.com/IvanKondrashkov/go-musthave-diploma-tpl/internal/models"
+	"github.com/IvanKondrashkov/go-market/internal/logger"
+	"github.com/IvanKondrashkov/go-market/internal/models"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
